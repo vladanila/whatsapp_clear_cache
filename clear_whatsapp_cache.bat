@@ -34,9 +34,9 @@ function Write-Banner {
 
 function Check-And-Close-WhatsApp {
     param([bool]$AutoClose = $false)
-    $processes = Get-Process -Name "WhatsApp" -ErrorAction SilentlyContinue
+    $processes = Get-Process -Name "*WhatsApp*" -ErrorAction SilentlyContinue
     if ($processes) {
-        Write-Host "[!] WhatsApp is currently running." -ForegroundColor Yellow
+        Write-Host "[!] WhatsApp is currently running ($($processes.Count) process(es) detected)." -ForegroundColor Yellow
         Write-Host "    Cache files are locked while WhatsApp is active." -ForegroundColor Yellow
         if (-not $AutoClose) {
             $choice = Read-Host "    Close WhatsApp now? (Y/N) [Default: Y]"
@@ -46,9 +46,9 @@ function Check-And-Close-WhatsApp {
             }
         }
         Write-Host "[*] Closing WhatsApp..." -ForegroundColor Cyan
-        Stop-Process -Name "WhatsApp" -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name "*WhatsApp*" -Force -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 2
-        $stillRunning = Get-Process -Name "WhatsApp" -ErrorAction SilentlyContinue
+        $stillRunning = Get-Process -Name "*WhatsApp*" -ErrorAction SilentlyContinue
         if ($stillRunning) {
             Write-Host "[!] Could not close all WhatsApp processes. Please close it manually in Task Manager." -ForegroundColor Red
             return $false
@@ -62,23 +62,25 @@ function Check-And-Close-WhatsApp {
 function Get-WhatsAppTargets {
     $targets = @()
 
-    # 1. Modern UWP / Microsoft Store Version (5319275A.WhatsAppDesktop_*)
+    # 1. Modern UWP / Microsoft Store Version (Stable, Beta & Future Packages)
     $pkgRoot = "$env:LOCALAPPDATA\Packages"
     if (Test-Path $pkgRoot) {
-        $waFolders = Get-ChildItem -Path $pkgRoot -Filter "5319275A.WhatsAppDesktop_*" -Directory -ErrorAction SilentlyContinue
+        # Matches 5319275A.WhatsAppDesktop_*, 5319275A.WhatsAppDesktopBeta_*, or any future Meta/WhatsApp package
+        $waFolders = Get-ChildItem -Path $pkgRoot -Filter "*WhatsApp*" -Directory -ErrorAction SilentlyContinue
         foreach ($wa in $waFolders) {
             # Media Transfers Cache (downloaded photos, videos, audio, voice notes)
+            # Searches dynamically for any 'transfers' folder under the package
             $transfers = Get-ChildItem -Path $wa.FullName -Recurse -Filter "transfers" -Directory -ErrorAction SilentlyContinue
             foreach ($t in $transfers) {
                 $targets += [PSCustomObject]@{
                     Category    = "Media"
-                    Description = "Downloaded media cache (transfers)"
+                    Description = "Downloaded media cache ($($t.Parent.Name)\transfers)"
                     Path        = $t.FullName
                     Recreate    = $true
                 }
             }
 
-            # Web, Code, and GPU Cache Folders
+            # Web, Code, and GPU Cache Folders (WebView2 / Chromium architecture)
             $appCacheDefs = @(
                 @{ Rel = "LocalCache\EBWebView\Default\Cache"; Desc = "WebView2 HTTP & media stream cache"; Recreate = $true },
                 @{ Rel = "LocalCache\EBWebView\Default\Code Cache"; Desc = "WebView2 compiled JavaScript/WASM cache"; Recreate = $true },

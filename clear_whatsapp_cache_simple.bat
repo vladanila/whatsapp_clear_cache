@@ -10,19 +10,19 @@ echo ======================================================================
 echo.
 
 :: 1. Close WhatsApp if running
-tasklist /fi "imagename eq WhatsApp.exe" 2>nul | find /i "WhatsApp.exe" >nul
+tasklist /fi "imagename eq WhatsApp*" 2>nul | find /i "WhatsApp" >nul
 if %ERRORLEVEL% equ 0 (
     echo [!] WhatsApp is currently running.
     echo [*] Closing WhatsApp to unlock cache files...
-    taskkill /F /IM WhatsApp.exe /T >nul 2>&1
+    taskkill /F /IM WhatsApp*.exe /T >nul 2>&1
     timeout /t 2 /nobreak >nul
 )
 
 echo [*] Purging WhatsApp cache folders...
 echo.
 
-:: 2. Clean UWP / Microsoft Store WhatsApp Cache
-for /d %%D in ("%LOCALAPPDATA%\Packages\5319275A.WhatsAppDesktop_*") do (
+:: 2. Clean UWP / Microsoft Store WhatsApp Cache (Matches Stable, Beta and future packages)
+for /d %%D in ("%LOCALAPPDATA%\Packages\*WhatsApp*") do (
     echo [Package] %%~nxD
 
     :: Media Transfers Cache (photos, videos, audio downloads)
