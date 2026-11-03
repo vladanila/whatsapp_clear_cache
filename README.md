@@ -4,7 +4,7 @@ A safe, fast, and lightweight tool to clear WhatsApp's cache and downloaded medi
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 1. Double-click **`clear_whatsapp_cache.bat`**.
 2. If WhatsApp is currently open, the script will prompt you to close it to unlock cache files.
@@ -18,7 +18,7 @@ A safe, fast, and lightweight tool to clear WhatsApp's cache and downloaded medi
 
 ---
 
-## 🔒 Safe Session Guarantee
+## Safe Session Guarantee
 
 **Will this log me out of WhatsApp?**  
 **No.** The script strictly isolates and removes temporary cache files. The following critical files and directories are **NEVER** modified or deleted:
@@ -35,7 +35,7 @@ Your account remains paired, and your chat history, contacts, and settings stay 
 
 ---
 
-## 📁 What Gets Cleaned?
+## What Gets Cleaned?
 
 ### 1. Downloaded Media Transfers (`LocalState\sessions\*\transfers`)
 When you view, open, or download media files in chats (photos, high-res pictures, videos, audio notes, documents), WhatsApp saves cached copies in `transfers`. Over weeks and months of heavy usage, this folder frequently expands to several gigabytes. Deleting this cache frees up this storage. *(If you ever need an old media file again in WhatsApp, you can re-download it from your chat).*
@@ -50,7 +50,7 @@ When you view, open, or download media files in chats (photos, high-res pictures
 
 ---
 
-## ⚡ Command-Line Usage (Automation & Shortcuts)
+## Command-Line Usage (Automation & Shortcuts)
 
 You can pass command-line arguments to `clear_whatsapp_cache.bat` for quick actions or scheduled tasks:
 
@@ -83,7 +83,7 @@ clear_whatsapp_cache.bat /silent
 
 ---
 
-## 📦 Files in this Repository
+## Files in this Repository
 
 - **`clear_whatsapp_cache.bat`** *(Recommended)*: Interactive batch script with detailed space analysis, colorized output, safety checks, menu options, and command-line switches.
 - **`clear_whatsapp_cache_simple.bat`**: Minimal pure CMD batch file using standard Windows command prompt syntax without PowerShell commands.
