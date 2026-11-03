@@ -1,0 +1,7 @@
+# Windows thumbnail and desktop files
+Thumbs.db
+Desktop.ini
+
+# Logs and temp files
+*.log
+*.tmp
